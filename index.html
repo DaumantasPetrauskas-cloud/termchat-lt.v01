@@ -1,1 +1,330 @@
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>misakaProject</title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1561.61">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #454545}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #454545; min-height: 14.0px}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #e4af0a}
+    span.s1 {color: #454545}
+    span.s2 {text-decoration: underline ; color: #e4af0a}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="lt"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">    &lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"&gt;</p>
+<p class="p1">    &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;</p>
+<p class="p1">    &lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;</p>
+<p class="p1">    &lt;meta name="apple-mobile-web-app-title" content="TermChat"&gt;</p>
+<p class="p1">    &lt;title&gt;TermChat LT&lt;/title&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">    &lt;!-- MQTT Library for Real-time Chat --&gt;</p>
+<p class="p3"><span class="s1">    &lt;script src="<a href="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"><span class="s2">https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js</span></a>" type="text/javascript"&gt;&lt;/script&gt;</span></p>
+<p class="p2"><br></p>
+<p class="p1">    &lt;style&gt;</p>
+<p class="p1">        :root {</p>
+<p class="p1">            --term-green: #00ff00;</p>
+<p class="p1">            --term-dim: #003300;</p>
+<p class="p1">            --term-bg: #000000;</p>
+<p class="p1">            --term-glow: 0 0 5px rgba(0, 255, 0, 0.7);</p>
+<p class="p1">            --font-stack: 'Courier New', Courier, monospace;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }</p>
+<p class="p2"><br></p>
+<p class="p1">        body {</p>
+<p class="p1">            margin: 0;</p>
+<p class="p1">            padding: 0;</p>
+<p class="p1">            background-color: var(--term-bg);</p>
+<p class="p1">            color: var(--term-green);</p>
+<p class="p1">            font-family: var(--font-stack);</p>
+<p class="p1">            height: 100vh;</p>
+<p class="p1">            overflow: hidden;</p>
+<p class="p1">            display: flex;</p>
+<p class="p1">            flex-direction: column;</p>
+<p class="p1">            transition: background-color 0.2s;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        /* Notification Flash Effect */</p>
+<p class="p1">        .notify-flash {</p>
+<p class="p1">            animation: flashGreen 0.5s ease-out;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        @keyframes flashGreen {</p>
+<p class="p1">            0% { background-color: var(--term-bg); }</p>
+<p class="p1">            10% { background-color: #004400; }</p>
+<p class="p1">            100% { background-color: var(--term-bg); }</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        /* CRT Scanline Effect */</p>
+<p class="p1">        body::before {</p>
+<p class="p1">            content: " ";</p>
+<p class="p1">            display: block;</p>
+<p class="p1">            position: absolute;</p>
+<p class="p1">            top: 0; left: 0; bottom: 0; right: 0;</p>
+<p class="p1">            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));</p>
+<p class="p1">            z-index: 2;</p>
+<p class="p1">            background-size: 100% 2px, 3px 100%;</p>
+<p class="p1">            pointer-events: none;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        #screen {</p>
+<p class="p1">            flex: 1;</p>
+<p class="p1">            overflow-y: auto;</p>
+<p class="p1">            padding: 20px;</p>
+<p class="p1">            padding-top: max(40px, env(safe-area-inset-top));</p>
+<p class="p1">            padding-bottom: 80px;<span class="Apple-converted-space"> </span></p>
+<p class="p1">            position: relative;</p>
+<p class="p1">            z-index: 1;</p>
+<p class="p1">            scrollbar-width: none;<span class="Apple-converted-space"> </span></p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        #screen::-webkit-scrollbar { display: none; }</p>
+<p class="p2"><br></p>
+<p class="p1">        .log-entry {</p>
+<p class="p1">            margin-bottom: 8px;</p>
+<p class="p1">            font-size: 16px;</p>
+<p class="p1">            line-height: 1.4;</p>
+<p class="p1">            word-wrap: break-word;</p>
+<p class="p1">            text-shadow: var(--term-glow);</p>
+<p class="p1">            font-weight: bold;</p>
+<p class="p1">            opacity: 0;</p>
+<p class="p1">            animation: fadeInText 0.1s forwards;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        @keyframes fadeInText { to { opacity: 1; } }</p>
+<p class="p2"><br></p>
+<p class="p1">        .system-msg { color: var(--term-green); }</p>
+<p class="p1">        .stranger-msg { color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.7); }</p>
+<p class="p1">        .error-msg { color: #ff3333; text-shadow: 0 0 5px rgba(255, 50, 50, 0.7); }</p>
+<p class="p1">        .greeting-msg { color: #ccffcc; font-weight: 900; }</p>
+<p class="p2"><br></p>
+<p class="p1">        .timestamp {</p>
+<p class="p1">            color: var(--term-dim);</p>
+<p class="p1">            margin-right: 8px;</p>
+<p class="p1">            font-size: 12px;</p>
+<p class="p1">            opacity: 0.7;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        .cursor-block {</p>
+<p class="p1">            display: inline-block;</p>
+<p class="p1">            width: 10px;</p>
+<p class="p1">            height: 18px;</p>
+<p class="p1">            background-color: var(--term-green);</p>
+<p class="p1">            vertical-align: middle;</p>
+<p class="p1">            animation: blink 0.8s step-end infinite;</p>
+<p class="p1">        }</p>
+<p class="p1">        @keyframes blink { 50% { opacity: 0; } }</p>
+<p class="p2"><br></p>
+<p class="p1">        /* INPUT AREA */</p>
+<p class="p1">        #input-area {</p>
+<p class="p1">            position: fixed;</p>
+<p class="p1">            bottom: 0;</p>
+<p class="p1">            left: 0;</p>
+<p class="p1">            width: 100%;</p>
+<p class="p1">            background: var(--term-bg);</p>
+<p class="p1">            border-top: 1px solid var(--term-dim);</p>
+<p class="p1">            padding: 10px 15px max(10px, env(safe-area-inset-bottom));</p>
+<p class="p1">            display: flex;</p>
+<p class="p1">            align-items: center;</p>
+<p class="p1">            z-index: 10;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        .prompt {</p>
+<p class="p1">            font-size: 18px;<span class="Apple-converted-space"> </span></p>
+<p class="p1">            margin-right: 10px;<span class="Apple-converted-space"> </span></p>
+<p class="p1">            text-shadow: var(--term-glow);</p>
+<p class="p1">            font-weight: bold;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        input {</p>
+<p class="p1">            flex: 1;</p>
+<p class="p1">            background: transparent;</p>
+<p class="p1">            border: none;</p>
+<p class="p1">            color: var(--term-green);</p>
+<p class="p1">            font-family: var(--font-stack);</p>
+<p class="p1">            font-size: 16px;</p>
+<p class="p1">            outline: none;</p>
+<p class="p1">            text-shadow: var(--term-glow);</p>
+<p class="p1">            caret-color: var(--term-green);</p>
+<p class="p1">            text-transform: uppercase;<span class="Apple-converted-space"> </span></p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        input::placeholder { color: #004400; text-transform: none; }</p>
+<p class="p2"><br></p>
+<p class="p1">        /* Mobile specific adjustments */</p>
+<p class="p1">        @media (min-width: 800px) {</p>
+<p class="p1">            body { max-width: 600px; margin: 0 auto; border-left: 1px solid var(--term-dim); border-right: 1px solid var(--term-dim); }</p>
+<p class="p1">        }</p>
+<p class="p1">    &lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">    &lt;div id="screen"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">    &lt;div id="input-area"&gt;</p>
+<p class="p1">        &lt;span class="prompt"&gt;&amp;gt;&lt;/span&gt;</p>
+<p class="p1">        &lt;input type="text" id="msg-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="RAŠYKITE ŽINUTĘ..."&gt;</p>
+<p class="p1">    &lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">    &lt;script&gt;</p>
+<p class="p1">        const BROKER_HOST = "<a href="http://broker.emqx.io/"><span class="s2">broker.emqx.io</span></a>";</p>
+<p class="p1">        const BROKER_PORT = 8084;<span class="Apple-converted-space"> </span></p>
+<p class="p1">        const TOPIC = "term-chat/global/v3";</p>
+<p class="p1">        const userID = "USR_" + Math.floor(Math.random() * 10000).toString().padStart(4, '0');</p>
+<p class="p2"><br></p>
+<p class="p1">        const screen = document.getElementById('screen');</p>
+<p class="p1">        const input = document.getElementById('msg-input');</p>
+<p class="p1">        let client = null;</p>
+<p class="p2"><br></p>
+<p class="p1">        // --- TYPEWRITER EFFECT ---</p>
+<p class="p1">        function typeWriter(text, element, speed = 30) {</p>
+<p class="p1">            return new Promise(resolve =&gt; {</p>
+<p class="p1">                let i = 0;</p>
+<p class="p1">                const span = document.createElement('span');</p>
+<p class="p1">                element.appendChild(span);</p>
+<p class="p1">                const cursor = document.createElement('span');</p>
+<p class="p1">                cursor.className = 'cursor-block';</p>
+<p class="p1">                element.appendChild(cursor);</p>
+<p class="p2"><br></p>
+<p class="p1">                function type() {</p>
+<p class="p1">                    if (i &lt; text.length) {</p>
+<p class="p1">                        span.textContent += text.charAt(i);</p>
+<p class="p1">                        i++;</p>
+<p class="p1">                        screen.scrollTop = screen.scrollHeight;</p>
+<p class="p1">                        setTimeout(type, speed);</p>
+<p class="p1">                    } else {</p>
+<p class="p1">                        cursor.style.display = 'none';</p>
+<p class="p1">                        resolve();</p>
+<p class="p1">                    }</p>
+<p class="p1">                }</p>
+<p class="p1">                type();</p>
+<p class="p1">            });</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        // --- VISUAL NOTIFICATION (FLASH) ---</p>
+<p class="p1">        function flashNotification() {</p>
+<p class="p1">            document.body.classList.remove('notify-flash');</p>
+<p class="p1">            void document.body.offsetWidth; // trigger reflow</p>
+<p class="p1">            document.body.classList.add('notify-flash');</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        // --- MAIN BOOT SEQUENCE ---</p>
+<p class="p1">        async function bootSystem() {</p>
+<p class="p1">            const div = document.createElement('div');</p>
+<p class="p1">            div.className = 'log-entry system-msg';</p>
+<p class="p1">            screen.appendChild(div);</p>
+<p class="p2"><br></p>
+<p class="p1">            // Lithuanian Boot Messages</p>
+<p class="p1">            await typeWriter("INICIALIZUOJAMA SISTEMA...", div);</p>
+<p class="p1">            await typeWriter("KRAUNAMI TINKLO TVARKYKLĖS...", div);</p>
+<p class="p1">            await typeWriter("JUNGIAMASI PRIE SERVERIO...", div);</p>
+<p class="p1">            initMQTT();</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        // --- MQTT LOGIC ---</p>
+<p class="p1">        function initMQTT() {</p>
+<p class="p1">            client = new Paho.MQTT.Client(BROKER_HOST, BROKER_PORT, "web_" + parseInt(Math.random() * 100000, 10));</p>
+<p class="p1">            client.onConnectionLost = onConnectionLost;</p>
+<p class="p1">            client.onMessageArrived = onMessageArrived;</p>
+<p class="p1">            client.connect({ onSuccess: onConnect, useSSL: true, onFailure: onFailure });</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        function onConnect() {</p>
+<p class="p1">            log("SISTEMA PRIJUNGTA.", 'system-msg');</p>
+<p class="p1">            log(`NAUDOTOJAS: ${userID}`, 'system-msg');</p>
+<p class="p1">            client.subscribe(TOPIC);</p>
+<p class="p1">            input.focus();</p>
+<p class="p2"><br></p>
+<p class="p1">            // Announce Join</p>
+<p class="p1">            const announceMsg = new Paho.MQTT.Message(JSON.stringify({ type: 'join', id: userID }));</p>
+<p class="p1">            announceMsg.destinationName = TOPIC;</p>
+<p class="p1">            client.send(announceMsg);</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        function onFailure(responseObject) {</p>
+<p class="p1">            log("KLAIDA: " + responseObject.errorMessage, 'error-msg');</p>
+<p class="p1">            setTimeout(initMQTT, 3000);</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        function onConnectionLost(responseObject) {</p>
+<p class="p1">            if (responseObject.errorCode !== 0) {</p>
+<p class="p1">                log("RYŠYS PRARASTAS. BANDOM IŠ NAUJO...", 'error-msg');</p>
+<p class="p1">                setTimeout(initMQTT, 3000);</p>
+<p class="p1">            }</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        function onMessageArrived(message) {</p>
+<p class="p1">            try {</p>
+<p class="p1">                const payload = JSON.parse(message.payloadString);</p>
+<p class="p1">                if (<a href="http://payload.id/"><span class="s2">payload.id</span></a> === userID) return;</p>
+<p class="p2"><br></p>
+<p class="p1">                if (payload.type === 'join') {</p>
+<p class="p1">                    // NOTIFICATION &amp; GREETING LOGIC</p>
+<p class="p1">                    flashNotification();<span class="Apple-converted-space"> </span></p>
+<p class="p1">                    log(`NAUJAS NAUDOTOJAS: ${<a href="http://payload.id/"><span class="s2">payload.id</span></a>}`, 'system-msg');</p>
+<p class="p2"><br></p>
+<p class="p1">                    // Automated Greeting Sequence</p>
+<p class="p1">                    setTimeout(() =&gt; {</p>
+<p class="p1">                        log(`SISTEMA: SIUNČIAMAS PASISVEIKINIMAS...`, 'system-msg');</p>
+<p class="p1">                    }, 500);</p>
+<p class="p2"><br></p>
+<p class="p1">                    setTimeout(() =&gt; {</p>
+<p class="p1">                        // Lithuanian Greetings</p>
+<p class="p1">                        log(`PASISVEIKINIMAS: LABAS / HI / HELLO`, 'greeting-msg');</p>
+<p class="p1">                        log(`UŽKLAUSA: PASIKALBAM? PAŠNEKĖKIM?`, 'greeting-msg');</p>
+<p class="p2"><br></p>
+<p class="p1">                        // Helper: Auto-fill "LABAS!" in Lithuanian</p>
+<p class="p1">                        input.value = "LABAS!";</p>
+<p class="p1">                    }, 1200);</p>
+<p class="p2"><br></p>
+<p class="p1">                } else if (payload.type === 'chat') {</p>
+<p class="p1">                    log(`&amp;lt;${<a href="http://payload.id/"><span class="s2">payload.id</span></a>}&amp;gt; ${payload.msg}`, 'stranger-msg');</p>
+<p class="p1">                }</p>
+<p class="p1">            } catch (e) { console.error(e); }</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        function log(text, type = 'user-msg') {</p>
+<p class="p1">            const div = document.createElement('div');</p>
+<p class="p1">            div.className = `log-entry ${type}`;</p>
+<p class="p1">            const now = new Date();</p>
+<p class="p1">            const time = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');</p>
+<p class="p2"><br></p>
+<p class="p1">            if (type === 'system-msg' || type === 'error-msg') {</p>
+<p class="p1">                div.innerText = `[${time}] ${text}`;</p>
+<p class="p1">            } else {</p>
+<p class="p1">                div.innerHTML = `&lt;span class="timestamp"&gt;[${time}]&lt;/span&gt; ${text}`;</p>
+<p class="p1">            }</p>
+<p class="p1">            screen.appendChild(div);</p>
+<p class="p1">            screen.scrollTop = screen.scrollHeight;</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        function sendMessage() {</p>
+<p class="p1">            const text = input.value.trim();</p>
+<p class="p1">            if (text &amp;&amp; client &amp;&amp; client.isConnected()) {</p>
+<p class="p1">                log(`&amp;lt;${userID}&amp;gt; ${text}`, 'system-msg');</p>
+<p class="p1">                const message = new Paho.MQTT.Message(JSON.stringify({ type: 'chat', id: userID, msg: text }));</p>
+<p class="p1">                message.destinationName = TOPIC;</p>
+<p class="p1">                client.send(message);</p>
+<p class="p1">                input.value = '';</p>
+<p class="p1">            }</p>
+<p class="p1">        }</p>
+<p class="p2"><br></p>
+<p class="p1">        input.addEventListener('keypress', function (e) {</p>
+<p class="p1">            if (e.key === 'Enter') sendMessage();</p>
+<p class="p1">        });</p>
+<p class="p2"><br></p>
+<p class="p1">        window.onload = bootSystem;</p>
+<p class="p2"><br></p>
+<p class="p1">    &lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
